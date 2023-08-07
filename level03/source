@@ -1,0 +1,46 @@
+int decrypt(int nbr)
+{
+
+	// int var1 = 0x757c7d51; u|}Q
+	// int var2 = 0x67667360; gfs`
+	// int var3 = 0x7b66737e; {fs~
+	// int var4 = 0x33617c7d; 3a|}
+	char str[17] = "Q}|u`sfg~sf{}|a3";
+	int i = -1;
+
+	while(str[++i])
+		str[i] = str[i] ^ nbr;
+	if (strncmp(str, "Congratulations!", 17) == 0)
+		system("/bin/sh");
+	else
+		puts("\nInvalid Password");
+	return ;
+  if (local_10 == *(int *)(in_GS_OFFSET + 0x14)) {
+    return iVar3;
+  }
+                    /* WARNING: Subroutine does not return */
+  __stack_chk_fail();
+}
+
+void test(int param_1,int param_2)
+{
+	param_1 -= param_2;
+	if (param_1 <= 21)
+		decrypt(param_1);
+	else
+		decrypt(rand());
+	return ;
+}
+
+int main(void)
+{
+  int scan;
+  
+  puts("***********************************");
+  puts("*\t\tlevel03\t\t**");
+  puts("***********************************");
+  printf("Password:");
+  scanf("%d", &scan);
+  test(322424845, scan);
+  return 0;
+}
