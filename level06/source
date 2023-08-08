@@ -1,0 +1,71 @@
+int auth(char *user_login,uint serial)
+{
+  size_t ret;
+  int return_value;
+  long ptrace_value;
+  int i;
+  uint tmp;
+  
+  ret = strcspn(user_login,"\n");
+  user_login[ret] = '\0';
+  ret = strnlen(user_login,0x20);
+  if ((int)ret < 6) {
+    return_value = 1;
+  }
+  else {
+    ptrace_value = ptrace(PTRACE_TRACEME);
+    if (ptrace_value == -1) {
+      puts("\x1b[32m.---------------------------.");
+      puts("\x1b[31m| !! TAMPERING DETECTED !!  |");
+      puts("\x1b[32m\'---------------------------\'");
+      return_value = 1;
+    }
+    else {
+      tmp = ((int)user_login[3] ^ 4919U) + 6221293;
+      for (i = 0; i < (int)ret; i = i + 1) {
+        if (user_login[i] < ' ') {
+          return 1;
+        }
+        tmp = tmp + ((int)user_login[i] ^ tmp) % 1337;
+      }
+      if (serial == tmp) {
+        return_value = 0;
+      }
+      else {
+        return_value = 1;
+      }
+    }
+  }
+  return return_value;
+}
+
+int main(void)
+{
+  int return_auth;
+  int in_GS_OFFSET;
+  char buffer_32 [32];
+  int canary;
+  unsigned int serials;
+  
+  canary = *(int *)(in_GS_OFFSET + 0x14);
+  puts("***********************************");
+  puts("*\t\tlevel06\t\t  *");
+  puts("***********************************");
+  printf("-> Enter Login: ");
+  fgets(buffer_32,32,stdin);
+  puts("***********************************");
+  puts("***** NEW ACCOUNT DETECTED ********");
+  puts("***********************************");
+  printf("-> Enter Serial: ");
+  scanf("%u", &serials);
+  return_auth = auth(buffer_32, serials);
+  if (return_auth == 0) {
+    puts("Authenticated!");
+    system("/bin/sh");
+  }
+  if (canary != *(int *)(in_GS_OFFSET + 0x14)) {
+                    /* WARNING: Subroutine does not return */
+    __stack_chk_fail();
+  }
+  return return_auth != 0;
+}
