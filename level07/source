@@ -1,0 +1,190 @@
+unsigned int get_unum(void)
+{
+  unsigned int local_10;
+  
+  local_10 = 0;
+  fflush(stdout);
+  scanf("%u",&local_10);
+  clear_stdin();
+  return local_10;
+}
+
+int read_number(int param_1)
+{
+  int iVar1;
+  
+  printf(" Index: ");
+  iVar1 = get_unum();
+  printf(" Number at data[%u] is %u\n",iVar1,*(undefined4 *)(iVar1 * 4 + param_1));
+  return 0;
+}
+
+undefined4 store_number(int param_1)
+{
+  uint user_number;
+  uint user_index;
+  undefined4 uVar1;
+  
+  printf(" Number: ");
+  user_number = get_unum();
+  printf(" Index: ");
+  user_index = get_unum();
+  if ((user_index % 3 == 0) || (user_number >> 24 == 183)) {
+    puts(" *** ERROR! ***");
+    puts("   This index is reserved for wil!");
+    puts(" *** ERROR! ***");
+    uVar1 = 1;
+  }
+  else {
+    *(uint *)(user_index * 4 + param_1) = user_number;
+    uVar1 = 0;
+  }
+  return uVar1;
+}
+
+undefined4 main(undefined4 param_1,char **param_2,char **param_3)
+{
+  char cVar1;
+  int i;
+  uint uVar2;
+  undefined4 *puVar3;
+  char *pcVar4;
+  byte *pbVar5;
+  int canary_value;
+  bool bVar6;
+  bool bVar7;
+  bool bVar8;
+  byte bVar9;
+  char **local_1c8;
+  char **local_1c4;
+  undefined4 buffer_100 [100];
+  undefined4 local_2c;
+  undefined4 local_28;
+  undefined4 local_24;
+  undefined4 local_20;
+  undefined4 local_1c;
+  undefined4 local_18;
+  int canary;
+  
+  bVar9 = 0;
+  local_1c4 = param_2;
+  local_1c8 = param_3;
+  canary = *(int *)(canary_value + 0x14);
+  local_2c = 0;
+  local_28 = 0;
+  local_24 = 0;
+  local_20 = 0;
+  local_1c = 0;
+  local_18 = 0;
+  puVar3 = buffer_100;
+  for (i = 100; i != 0; i = i + -1) {
+    *puVar3 = 0;
+    puVar3 = puVar3 + 1;
+  }
+  for (; *local_1c4 != (char *)0x0; local_1c4 = local_1c4 + 1) {
+    uVar2 = 0xffffffff;
+    pcVar4 = *local_1c4;
+    do {
+      if (uVar2 == 0) break;
+      uVar2 = uVar2 - 1;
+      cVar1 = *pcVar4;
+      pcVar4 = pcVar4 + (uint)bVar9 * -2 + 1;
+    } while (cVar1 != '\0');
+    memset(*local_1c4,0,~uVar2 - 1);
+  }
+  for (; *local_1c8 != (char *)0x0; local_1c8 = local_1c8 + 1) {
+    uVar2 = 0xffffffff;
+    pcVar4 = *local_1c8;
+    do {
+      if (uVar2 == 0) break;
+      uVar2 = uVar2 - 1;
+      cVar1 = *pcVar4;
+      pcVar4 = pcVar4 + (uint)bVar9 * -2 + 1;
+    } while (cVar1 != '\0');
+    memset(*local_1c8,0,~uVar2 - 1);
+  }
+  puts(
+      "----------------------------------------------------\n  Welcome to wil\'s crappy number stora ge service!   \n----------------------------------------------------\n Commands:                                           \n    store - store a number into the data storage    \n    read   - read a number from the data storage     \n    quit  - exit the program                         \n----------------------------------------------------\n   wil has reserved some storage :>                  \n----------------------------------------------------\n"
+      );
+  do {
+    printf("Input command: ");
+    local_2c = 1;
+    fgets((char *)&local_28,20,stdin);
+    uVar2 = 0xffffffff;
+    puVar3 = &local_28;
+    do {
+      if (uVar2 == 0) break;
+      uVar2 = uVar2 - 1;
+      cVar1 = *(char *)puVar3;
+      puVar3 = (undefined4 *)((int)puVar3 + (uint)bVar9 * -2 + 1);
+    } while (cVar1 != '\0');
+    uVar2 = ~uVar2;
+    bVar6 = uVar2 == 1;
+    bVar8 = uVar2 == 2;
+    *(undefined *)((int)&local_2c + uVar2 + 2) = 0;
+    i = 5;
+    puVar3 = &local_28;
+    pbVar5 = (byte *)"store";
+    do {
+      if (i == 0) break;
+      i = i + -1;
+      bVar6 = *(byte *)puVar3 < *pbVar5;
+      bVar8 = *(byte *)puVar3 == *pbVar5;
+      puVar3 = (undefined4 *)((int)puVar3 + (uint)bVar9 * -2 + 1);
+      pbVar5 = pbVar5 + (uint)bVar9 * -2 + 1;
+    } while (bVar8);
+    bVar7 = false;
+    bVar6 = (!bVar6 && !bVar8) == bVar6;
+    if (bVar6) {
+      local_2c = store_number(buffer_100);
+    }
+    else {
+      i = 4;
+      puVar3 = &local_28;
+      pbVar5 = &DAT_08048d61;
+      do {
+        if (i == 0) break;
+        i = i + -1;
+        bVar7 = *(byte *)puVar3 < *pbVar5;
+        bVar6 = *(byte *)puVar3 == *pbVar5;
+        puVar3 = (undefined4 *)((int)puVar3 + (uint)bVar9 * -2 + 1);
+        pbVar5 = pbVar5 + (uint)bVar9 * -2 + 1;
+      } while (bVar6);
+      bVar8 = false;
+      bVar6 = (!bVar7 && !bVar6) == bVar7;
+      if (bVar6) {
+        local_2c = read_number(buffer_100);
+      }
+      else {
+        i = 4;
+        puVar3 = &local_28;
+        pbVar5 = &DAT_08048d66;
+        do {
+          if (i == 0) break;
+          i = i + -1;
+          bVar8 = *(byte *)puVar3 < *pbVar5;
+          bVar6 = *(byte *)puVar3 == *pbVar5;
+          puVar3 = (undefined4 *)((int)puVar3 + (uint)bVar9 * -2 + 1);
+          pbVar5 = pbVar5 + (uint)bVar9 * -2 + 1;
+        } while (bVar6);
+        if ((!bVar8 && !bVar6) == bVar8) {
+          if (canary == *(int *)(canary_value + 0x14)) {
+            return 0;
+          }
+                    /* WARNING: Subroutine does not return */
+          __stack_chk_fail();
+        }
+      }
+    }
+    if (local_2c == 0) {
+      printf(" Completed %s command successfully\n",&local_28);
+    }
+    else {
+      printf(" Failed to do %s command\n",&local_28);
+    }
+    local_28 = 0;
+    local_24 = 0;
+    local_20 = 0;
+    local_1c = 0;
+    local_18 = 0;
+  } while( true );
