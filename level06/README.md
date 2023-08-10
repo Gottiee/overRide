@@ -1,4 +1,4 @@
-# Bypass praceme
+# Bypass traceme
 
 ## Protection
 
