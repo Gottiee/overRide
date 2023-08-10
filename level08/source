@@ -1,0 +1,122 @@
+void log_wrapper(FILE *file_backup,char *str_to_write,char *argv1)
+{
+  char cVar1;
+  size_t sVar2;
+  ulong uVar3;
+  ulong size_str_to_write;
+  long in_FS_OFFSET;
+  byte bVar4;
+  undefined8 file_backup_copy;
+  char buffer_264 [264];
+  long canary;
+  char *pointeur_buffer;
+  
+  bVar4 = 0;
+  canary = *(long *)(in_FS_OFFSET + 0x28);
+  file_backup_copy = file_backup;
+  strcpy(buffer_264,str_to_write);
+  uVar3 = 0xffffffffffffffff;
+  pointeur_buffer = buffer_264;
+  do {
+    if (uVar3 == 0) break;
+    uVar3 = uVar3 - 1;
+    cVar1 = *pointeur_buffer;
+    pointeur_buffer = pointeur_buffer + (ulong)bVar4 * -2 + 1;
+  } while (cVar1 != '\0');
+  size_str_to_write = 0xffffffffffffffff;
+  pointeur_buffer = buffer_264;
+  do {
+    if (size_str_to_write == 0) break;
+    size_str_to_write = size_str_to_write - 1;
+    cVar1 = *pointeur_buffer;
+    pointeur_buffer = pointeur_buffer + (ulong)bVar4 * -2 + 1;
+  } while (cVar1 != '\0');
+  snprintf(buffer_264 + (~size_str_to_write - 1),254 - (~uVar3 - 1),argv1);
+  sVar2 = strcspn(buffer_264,"\n");
+  buffer_264[sVar2] = '\0';
+  fprintf(file_backup_copy,"LOG: %s\n",buffer_264);
+  if (canary != *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Subroutine does not return */
+    __stack_chk_fail();
+  }
+  return;
+}
+
+
+int main(int argc,char **argv)
+{
+  char cVar1;
+  int __fd;
+  int iVar2;
+  FILE *file_backup;
+  FILE *__stream;
+  ulong uVar4;
+  undefined8 *puVar5;
+  long in_FS_OFFSET;
+  byte bVar6;
+  char local_79;
+  undefined8 backup_str;
+  undefined2 local_70;
+  char local_6e;
+  long canary;
+  
+  bVar6 = 0;
+  canary = *(long *)(in_FS_OFFSET + 0x28);
+  local_79 = -1;
+  if (argc != 2) {
+    printf("Usage: %s filename\n",*argv);
+  }
+  file_backup = fopen("./backups/.log","w");
+  if (file_backup == (FILE *)0x0) {
+    printf("ERROR: Failed to open %s\n","./backups/.log");
+                    /* WARNING: Subroutine does not return */
+    exit(1);
+  }
+  log_wrapper(file_backup,"Starting back up: ",argv[1]);
+  __stream = fopen(argv[1],"r");
+  if (__stream == (FILE *)0x0) {
+    printf("ERROR: Failed to open %s\n",argv[1]);
+                    /* WARNING: Subroutine does not return */
+    exit(1);
+  }
+  backup_str._0_1_ = '.';
+  backup_str._1_1_ = '/';
+  backup_str._2_1_ = 'b';
+  backup_str._3_1_ = 'a';
+  backup_str._4_1_ = 'c';
+  backup_str._5_1_ = 'k';
+  backup_str._6_1_ = 'u';
+  backup_str._7_1_ = 'p';
+  local_70._0_1_ = 's';
+  local_70._1_1_ = '/';
+  local_6e = '\0';
+  uVar4 = 0xffffffffffffffff;
+  puVar5 = &backup_str;
+  do {
+    if (uVar4 == 0) break;
+    uVar4 = uVar4 - 1;
+    cVar1 = *(char *)puVar5;
+    puVar5 = (undefined8 *)((long)puVar5 + (ulong)bVar6 * -2 + 1);
+  } while (cVar1 != '\0');
+  strncat((char *)&backup_str,argv[1],99 - (~uVar4 - 1));
+  __fd = open((char *)&backup_str,193,0x1b0);
+  if (__fd < 0) {
+    printf("ERROR: Failed to open %s%s\n","./backups/",argv[1]);
+                    /* WARNING: Subroutine does not return */
+    exit(1);
+  }
+  while( true ) {
+    iVar2 = fgetc(__stream);
+    local_79 = (char)iVar2;
+    if (local_79 == -1) break;
+    write(__fd,&local_79,1);
+  }
+  log_wrapper(file_backup,"Finished back up ",argv[1]);
+  fclose(__stream);
+  close(__fd);
+  if (canary != *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Subroutine does not return */
+    __stack_chk_fail();
+  }
+  return 0;
+}
